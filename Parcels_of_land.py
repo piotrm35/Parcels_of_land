@@ -19,7 +19,7 @@
 
 SCRIPT_TITLE = 'Parcels of land'
 SCRIPT_NAME = 'Parcels_of_land'
-SCRIPT_VERSION = '0.1.0'
+SCRIPT_VERSION = '0.1.1'
 GENERAL_INFO = """
 author: Piotr Michałowski, Olsztyn, woj. W-M, Poland
 piotrm35@hotmail.com
@@ -64,8 +64,10 @@ class Parcels_of_land(QtWidgets.QMainWindow):
         uic.loadUi(os.path.join(self.base_path, 'ui', 'Parcels_of_land.ui'), self)
         self.setWindowTitle(SCRIPT_TITLE + ' v. ' + SCRIPT_VERSION)
         self.Refresh_map_pushButton.clicked.connect(self.Refresh_map_pushButton_clicked)
+        self.Refresh_map_pushButton.setEnabled(False)
         self.Refresh_list_pushButton.clicked.connect(self.Refresh_list_pushButton_clicked)
         self.About_pushButton.clicked.connect(self.about_pushButton_clicked)
+        self.Input_parcel_list_textEdit.textChanged.connect(self.Input_parcel_list_textEdit_textChanged)
         
         
     def unload(self):
@@ -74,6 +76,7 @@ class Parcels_of_land(QtWidgets.QMainWindow):
         self.Refresh_map_pushButton.clicked.disconnect(self.Refresh_map_pushButton_clicked)
         self.Refresh_list_pushButton.clicked.disconnect(self.Refresh_list_pushButton_clicked)
         self.About_pushButton.clicked.disconnect(self.about_pushButton_clicked)
+        self.Input_parcel_list_textEdit.textChanged.disconnect(self.Input_parcel_list_textEdit_textChanged)
 
 
     def run(self):
@@ -103,7 +106,6 @@ class Parcels_of_land(QtWidgets.QMainWindow):
         else:
             print('Refresh_map_pushButton_clicked: there are no input data.')
         self.output_layer.commitChanges()
-        self.Refresh_map_pushButton.setEnabled(True)
 
 
     def Refresh_list_pushButton_clicked(self):
@@ -118,6 +120,10 @@ class Parcels_of_land(QtWidgets.QMainWindow):
 
     def about_pushButton_clicked(self):
         QtWidgets.QMessageBox.information(self, SCRIPT_TITLE, SCRIPT_TITLE + ' v. ' + SCRIPT_VERSION + '\n' + GENERAL_INFO)
+
+
+    def Input_parcel_list_textEdit_textChanged(self):
+        self.Refresh_map_pushButton.setEnabled(True)
 
 
     #----------------------------------------------------------------------------------------------------------------
