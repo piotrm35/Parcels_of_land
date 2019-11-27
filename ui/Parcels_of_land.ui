@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>Parcels_of_land_Form</class>
+ <widget class="QWidget" name="Parcels_of_land_Form">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>410</width>
+    <height>540</height>
+   </rect>
+  </property>
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
+  </property>
+  <property name="minimumSize">
+   <size>
+    <width>410</width>
+    <height>540</height>
+   </size>
+  </property>
+  <property name="maximumSize">
+   <size>
+    <width>410</width>
+    <height>540</height>
+   </size>
+  </property>
+  <property name="windowTitle">
+   <string notr="true">Parcels_of_land</string>
+  </property>
+  <property name="windowIcon">
+   <iconset>
+    <normaloff>../img/Parcels_of_land_ICON.png</normaloff>../img/Parcels_of_land_ICON.png</iconset>
+  </property>
+  <widget class="QWidget" name="centralwidget" native="true">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>409</width>
+     <height>510</height>
+    </rect>
+   </property>
+   <widget class="QTextEdit" name="Input_parcel_list_textEdit">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>30</y>
+      <width>389</width>
+      <height>471</height>
+     </rect>
+    </property>
+    <property name="readOnly">
+     <bool>false</bool>
+    </property>
+    <property name="textInteractionFlags">
+     <set>Qt::TextEditorInteraction</set>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>10</y>
+      <width>150</width>
+      <height>13</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string notr="true">input parcel list (paste it here):</string>
+    </property>
+   </widget>
+  </widget>
+  <widget class="QPushButton" name="Refresh_list_pushButton">
+   <property name="geometry">
+    <rect>
+     <x>324</x>
+     <y>510</y>
+     <width>75</width>
+     <height>23</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string notr="true">refresh list</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="About_pushButton">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>510</y>
+     <width>21</width>
+     <height>23</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>?</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="Refresh_map_pushButton">
+   <property name="geometry">
+    <rect>
+     <x>240</x>
+     <y>510</y>
+     <width>75</width>
+     <height>23</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string notr="true">refresh map</string>
+   </property>
+  </widget>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

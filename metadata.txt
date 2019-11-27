@@ -1,0 +1,31 @@
+[general]
+
+name=Parcels of land
+
+description=Plugin that adds a parcel to polygon layer using uldk.gugik.gov.pl service.
+
+about=Plugin that adds a parcel to polygon layer using uldk.gugik.gov.pl service.
+ 
+ 
+version=0.1.0
+
+qgisMinimumVersion=3.0
+
+category=Plugins
+
+icon=img/Parcels_of_land_ICON.png
+
+author=Piotr Michałowski, Olsztyn, woj. W-M, Poland
+
+email=piotrm35@hotmail.com
+
+homepage=https://github.com/piotrm35/Parcels_of_land
+repository=https://github.com/piotrm35/Parcels_of_land
+tracker=https://github.com/piotrm35/Parcels_of_land/issues
+
+experimental=True
+
+deprecated=False
+
+tags=parcel, gugik, uldk
+
