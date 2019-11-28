@@ -19,7 +19,7 @@
 
 SCRIPT_TITLE = 'Parcels of land'
 SCRIPT_NAME = 'Parcels_of_land'
-SCRIPT_VERSION = '0.1.1'
+SCRIPT_VERSION = '0.1.2'
 GENERAL_INFO = """
 author: Piotr Michałowski, Olsztyn, woj. W-M, Poland
 piotrm35@hotmail.com
@@ -34,6 +34,7 @@ from PyQt5 import QtGui, QtWidgets, uic
 from qgis.core import *
 from qgis.utils import iface
 from .Setup import Setup
+from .Logger import Logger
 
 
 BASE_ID_URL = 'https://uldk.gugik.gov.pl/?request=GetParcelById&id='
@@ -50,6 +51,9 @@ class Parcels_of_land(QtWidgets.QMainWindow):
         self.base_path = os.sep.join(os.path.realpath(__file__).split(os.sep)[0:-1])
         self.icon = QtGui.QIcon(os.path.join(self.base_path, 'img', 'Parcels_of_land_ICON.png'))
         self.output_layer = None
+        self.logger = Logger(os.path.join(self.base_path, 'log', 'Parcels_of_land.log'), 10 * 1024, 4, 'Parcels_of_land')
+        self.print_info('__init__ - OK.')
+        
 
 
     #----------------------------------------------------------------------------------------------------------------
@@ -68,6 +72,7 @@ class Parcels_of_land(QtWidgets.QMainWindow):
         self.Refresh_list_pushButton.clicked.connect(self.Refresh_list_pushButton_clicked)
         self.About_pushButton.clicked.connect(self.about_pushButton_clicked)
         self.Input_parcel_list_textEdit.textChanged.connect(self.Input_parcel_list_textEdit_textChanged)
+        self.print_info('initGui - OK.')
         
         
     def unload(self):
@@ -77,6 +82,7 @@ class Parcels_of_land(QtWidgets.QMainWindow):
         self.Refresh_list_pushButton.clicked.disconnect(self.Refresh_list_pushButton_clicked)
         self.About_pushButton.clicked.disconnect(self.about_pushButton_clicked)
         self.Input_parcel_list_textEdit.textChanged.disconnect(self.Input_parcel_list_textEdit_textChanged)
+        self.print_info('unload - OK.')
 
 
     def run(self):
@@ -91,31 +97,38 @@ class Parcels_of_land(QtWidgets.QMainWindow):
 
     def Refresh_map_pushButton_clicked(self):
         self.Refresh_map_pushButton.setEnabled(False)
-        self.output_layer.startEditing()
-        parcel_list = self.get_parcel_list()
-        if parcel_list:
-            map_list = self.gat_map_list()
-            for row in parcel_list:
-                if row not in map_list:
-                    self.add_parcel_by_id(row)
-                else:
-                    map_list.remove(row)
-            if map_list:
-                to_delete_fid_list = self.get_features_id_list(map_list)
-                res = self.output_layer.dataProvider().deleteFeatures(to_delete_fid_list)
-        else:
-            print('Refresh_map_pushButton_clicked: there are no input data.')
-        self.output_layer.commitChanges()
+        try:
+            self.output_layer.startEditing()
+            parcel_list = self.get_parcel_list()
+            if parcel_list:
+                map_list = self.gat_map_list()
+                for row in parcel_list:
+                    if row not in map_list:
+                        self.add_parcel_by_id(row)
+                    else:
+                        map_list.remove(row)
+                if map_list:
+                    to_delete_fid_list = self.get_features_id_list(map_list)
+                    res = self.output_layer.dataProvider().deleteFeatures(to_delete_fid_list)
+            else:
+                self.print_info('Refresh_map_pushButton_clicked: there are no input data.')
+            self.output_layer.commitChanges()
+        except Exception as e:
+            self.print_info('Refresh_map_pushButton_clicked EXCEPTION: ' + str(e))
 
 
     def Refresh_list_pushButton_clicked(self):
         self.Refresh_list_pushButton.setEnabled(False)
-        map_list = self.gat_map_list()
-        if map_list:
-            self.Input_parcel_list_textEdit.setPlainText('\n'.join(map_list))
-        else:
-            print('Refresh_list_pushButton_clicked: there are no input data.')
-        self.Refresh_list_pushButton.setEnabled(True)
+        try:
+            map_list = self.gat_map_list()
+            if map_list:
+                self.Input_parcel_list_textEdit.setPlainText('\n'.join(map_list))
+            else:
+                self.print_info('Refresh_list_pushButton_clicked: there are no input data.')
+        except Exception as e:
+            self.print_info('Refresh_list_pushButton_clicked EXCEPTION: ' + str(e))
+        finally:
+            self.Refresh_list_pushButton.setEnabled(True)
                 
 
     def about_pushButton_clicked(self):
@@ -149,14 +162,14 @@ class Parcels_of_land(QtWidgets.QMainWindow):
                 with urllib.request.urlopen(url) as response:
                    result = response.read()
             except:
-                print('ERROR(' + parcel_id + '):')
-                print('url = ' + url + '\n')
+                self.print_info('ERROR(' + parcel_id + '):')
+                self.print_info('url = ' + url)
                 return
             try:
                 result = result.decode()
             except:
-                print('ERROR(' + parcel_id + '):')
-                print('result = ' + str(result) + '\n')
+                self.print_info('ERROR(' + parcel_id + '):')
+                self.print_info('result = ' + str(result))
                 return
             result_list = result.split('\n')
             if result_list[0].strip() == '0' and len(result_list) >= 2:
@@ -168,27 +181,27 @@ class Parcels_of_land(QtWidgets.QMainWindow):
                     output_feat.setGeometry(output_geom)
                     self.set_attribute_if_exist(output_feat, PARCEL_FIELD_NAME, parcel_id)
                     (res, outFeats) = self.output_layer.dataProvider().addFeatures([output_feat])
-                    print('SUCCESS(' + parcel_id + ')')
+                    self.print_info('SUCCESS(' + parcel_id + ')')
                     return
                 else:
-                    print('ERROR(' + parcel_id + '):')
-                    print('len(result_list)(2) = ' + str(len(result_list)) + '\n')
+                    self.print_info('ERROR(' + parcel_id + '):')
+                    self.print_info('len(result_list)(2) = ' + str(len(result_list)))
                     return
             else:
-                print('ERROR(' + parcel_id + '):')
-                print('result_list[0] = ' + str(result_list[0]))
-                print('len(result_list) = ' + str(len(result_list)) + '\n')
+                self.print_info('ERROR(' + parcel_id + '):')
+                self.print_info('result_list[0] = ' + str(result_list[0]))
+                self.print_info('len(result_list) = ' + str(len(result_list)))
                 return
         else:
-            print('ERROR(' + parcel_id + '):')
-            print('len(parcel_id_list) = ' + str(len(parcel_id_list)) + '\n')
+            self.print_info('ERROR(' + parcel_id + '):')
+            self.print_info('len(parcel_id_list) = ' + str(len(parcel_id_list)))
             
 
     def set_attribute_if_exist(self, qgs_feature, attribute_name, attribute_value):
         try:
             qgs_feature.setAttribute(attribute_name, attribute_value)
         except:
-            print("Can't set attribute: " + attribute_name)
+            self.print_info("Can't set attribute: " + attribute_name)
 
 
     def get_parcel_list(self):
@@ -215,6 +228,13 @@ class Parcels_of_land(QtWidgets.QMainWindow):
             for feature in self.output_layer.getFeatures(request):
                 output_list.append(feature.id())
         return output_list
+
+
+    def print_info(self, info):
+        if self.logger and Setup.LOGGER:
+            self.logger.write_INFO_log(info)
+        else:
+            print(info)
             
 
     #----------------------------------------------------------------------------------------------------------------

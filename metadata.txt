@@ -4,10 +4,10 @@ name=Parcels of land
 
 description=Plugin that adds a parcel to polygon layer using uldk.gugik.gov.pl service.
 
-about=Plugin that adds a parcel to polygon layer using uldk.gugik.gov.pl service.
+about=Please read README.md file to catch details.
  
  
-version=0.1.1
+version=0.1.2
 
 qgisMinimumVersion=3.0
 

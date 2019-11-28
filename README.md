@@ -10,6 +10,7 @@ QGIS plugin that adds a parcel to polygon layer using uldk.gugik.gov.pl service.
 4) enter the parcel ids in the separate rows into the main text field of this plugin
 5) press [refresh map] button to see parcels on the map
 6) if You delete a parcel from the map, You can refresh list in main text field of this plugin by pressing [refresh list] button
+7) if in trouble, look into log file
 
 
 # License:
